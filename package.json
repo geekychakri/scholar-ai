@@ -11,10 +11,12 @@
   "dependencies": {
     "@supabase/ssr": "^0.4.0",
     "@supabase/supabase-js": "^2.44.4",
+    "keyword-extractor": "^0.0.28",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
-    "react-feather": "^2.0.10"
+    "react-feather": "^2.0.10",
+    "swr": "^2.2.5"
   },
   "devDependencies": {
     "@types/node": "^20",
