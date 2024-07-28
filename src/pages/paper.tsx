@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { GetServerSidePropsContext } from "next";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@/components/Editor";
@@ -28,6 +29,13 @@ class StatusError extends Error {
   info: string | undefined;
   status: number | undefined;
 }
+
+const metaData = (
+  <Head>
+    <title>Paper</title>
+    <meta name="description" content="paper" />
+  </Head>
+);
 
 export default function Paper({
   data,
@@ -82,6 +90,7 @@ export default function Paper({
 
   return (
     <>
+      {metaData}
       <PanelGroup direction={isMobile ? "vertical" : "horizontal"}>
         <Panel className="" defaultSize={30}>
           <div className="overflow-auto w-full h-full">

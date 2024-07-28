@@ -1,7 +1,9 @@
 import Head from "next/head";
 
 import { createClient } from "@/utils/supabase/component";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Download } from "lucide-react";
+
+import { mkConfig, generateCsv, download } from "export-to-csv";
 
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
 
@@ -9,6 +11,7 @@ import DataTable from "@/components/DataTable";
 import { columns } from "@/components/DataTable/Columns";
 
 import { Spinner } from "@/SVG/Spinner";
+import { Button } from "@/components/ui/button";
 
 import { BookmarksType } from "@/types";
 
@@ -18,6 +21,14 @@ const metaData = (
     <meta name="description" content="Bookmarks" />
   </Head>
 );
+
+const csvConfig = mkConfig({
+  useKeysAsHeaders: true,
+  filename: "scholar-ai",
+  showTitle: true,
+  title: "Bookmarks",
+  useBom: true,
+});
 
 export default function Bookmarks() {
   const supabase = createClient();
@@ -88,7 +99,23 @@ export default function Bookmarks() {
     <>
       {metaData}
       <div className="flex flex-col gap-3 p-4">
-        <h1 className="font-medium">Bookmarks</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="font-medium">Bookmarks</h1>
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            onClick={async () => {
+              const csv = generateCsv(csvConfig)(csvData as any);
+              download(csvConfig)(csv);
+            }}
+          >
+            Export as CSV
+            <span>
+              <Download size={18} />
+            </span>
+          </Button>
+        </div>
+
         <DataTable
           columns={columns}
           data={data as []}

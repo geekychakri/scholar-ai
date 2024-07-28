@@ -23,7 +23,6 @@ const maxWidth = 800;
 type PDFFile = string | File | null;
 
 export default function PDFSample({ fileUrl }: { fileUrl: string }) {
-  // const [file, setFile] = useState<PDFFile>("./bitcoin.pdf");
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);

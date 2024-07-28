@@ -1,4 +1,5 @@
-import { GetServerSidePropsContext } from "next";
+import Head from "next/head";
+import type { GetServerSidePropsContext } from "next";
 
 import Editor from "@/components/Editor";
 
@@ -10,19 +11,29 @@ type NoteType = {
   paper_id: string;
 };
 
+const metaData = (
+  <Head>
+    <title>Note</title>
+    <meta name="description" content="Note" />
+  </Head>
+);
+
 export default function Note({ note }: { note: NoteType }) {
   if (!note) {
     return <div className="p-6">Note not found!</div>;
   }
   return (
-    <div className="w-1/2 mx-auto max-sm:w-full border my-8 rounded-md max-sm:border-none">
-      <h1 className="border-b p-4">Title: {note?.paper_title}</h1>
-      <Editor
-        paperTitle={note?.paper_title}
-        paperId={note?.paper_id}
-        note={note?.note}
-      />
-    </div>
+    <>
+      {metaData}
+      <div className="w-1/2 mx-auto max-sm:w-full border my-8 rounded-md max-sm:border-none">
+        <h1 className="border-b p-4">Title: {note?.paper_title}</h1>
+        <Editor
+          paperTitle={note?.paper_title}
+          paperId={note?.paper_id}
+          note={note?.note}
+        />
+      </div>
+    </>
   );
 }
 
