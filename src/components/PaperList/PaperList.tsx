@@ -1,13 +1,9 @@
 import { useRouter } from "next/router";
 
 import { columns } from "@/components/DataTable/Columns";
-
 import DataTable from "@/components/DataTable";
-
 import { Button } from "@/components/ui/button";
-
 import { usePapers } from "@/hooks/usePapers";
-
 import { PaperType } from "@/types";
 
 function PaperList({ user }: { user: any }) {

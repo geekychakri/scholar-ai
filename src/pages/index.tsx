@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+import type { GetServerSidePropsContext } from "next";
+
+import { createClient } from "@/utils/supabase/server-props";
+
 export default function Home() {
   return (
     <main className="max-w-3xl mx-auto flex-1 flex items-center">
@@ -23,4 +27,25 @@ export default function Home() {
       </div>
     </main>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const supabase = createClient(context);
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+
+    if (data?.user) {
+      return {
+        redirect: {
+          destination: "/search",
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        props: {},
+      };
+    }
+  } catch (err) {}
 }

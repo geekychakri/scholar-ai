@@ -3,6 +3,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import createClient from "@/utils/supabase/api";
 import KeywordExtractor from "keyword-extractor";
 
+import createClientAPI from "@/utils/supabase/api";
+
 import { PaperType } from "@/types";
 
 export default async function handler(
@@ -10,6 +12,16 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
+    const clientAPI = createClientAPI(req, res);
+
+    // Check if we have a session
+    const { data: userData, error } = await clientAPI.auth.getUser();
+
+    if (error || !userData) {
+      return res.status(401).json({
+        msg: "not_authenticated",
+      });
+    }
     const { query, index, year } = req.query;
 
     console.log({ query, index, year });

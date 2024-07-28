@@ -1,6 +1,7 @@
 import { useState, useRef, FormEvent } from "react";
-
 import { useRouter } from "next/router";
+
+import type { User } from "@supabase/supabase-js";
 
 import { usePapers } from "@/hooks/usePapers";
 
@@ -53,7 +54,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   isLoading: boolean;
   csvData: any;
-  user: any; //TODO:
+  user?: User; //TODO:
 }
 
 //Types
@@ -191,89 +192,92 @@ function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center mb-4 flex-wrap gap-4">
-        <form
-          className="flex items-center border w-1/2 max-xl:w-full h-[50px] p-2 gap-2 rounded-md max-sm:w-full"
-          onSubmit={(e: FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            router.push(`/papers?q=${searchRef.current?.value}`, undefined, {
-              shallow: true,
-            });
-          }}
-        >
-          <span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 256 256"
-            >
-              <path
-                fill="#96a5b9"
-                d="m229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72a72.08 72.08 0 0 1-72-72Z"
-              />
-            </svg>
-          </span>
-
-          <input
-            id="question"
-            type="text"
-            className="flex-1 min-w-0 outline-none text-md peer/question"
-            placeholder="Ask a research question"
-            ref={searchRef}
-          />
-          <button className="bg-[#121212] text-white p-2 py-1 font-medium rounded-md block peer-placeholder-shown/question:hidden">
-            Search
-          </button>
-        </form>
-
-        <div className="flex flex-wrap gap-4 xl:ml-auto max-sm:ml-0">
-          <SelectYear />
-          <Button
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={async () => {
-              const csv = generateCsv(csvConfig)(csvData);
-              download(csvConfig)(csv);
+      {router.pathname !== "/bookmarks" && (
+        <div className="flex items-center mb-4 flex-wrap gap-4">
+          <form
+            className="flex items-center border w-1/2 max-xl:w-full h-[50px] p-2 gap-2 rounded-md max-sm:w-full"
+            onSubmit={(e: FormEvent<HTMLFormElement>) => {
+              e.preventDefault();
+              router.push(`/papers?q=${searchRef.current?.value}`, undefined, {
+                shallow: true,
+              });
             }}
           >
-            Export as CSV
             <span>
-              <Download size={18} />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 256 256"
+              >
+                <path
+                  fill="#96a5b9"
+                  d="m229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72a72.08 72.08 0 0 1-72-72Z"
+                />
+              </svg>
             </span>
-          </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
-                Filter
-                <span>
-                  <Filter size={18} />
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                ?.getAllColumns()
-                ?.filter((column) => column.getCanHide())
-                ?.map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            <input
+              id="question"
+              type="text"
+              className="flex-1 min-w-0 outline-none text-md peer/question"
+              placeholder="Ask a research question"
+              ref={searchRef}
+            />
+            <button className="bg-[#121212] text-white p-2 py-1 font-medium rounded-md block peer-placeholder-shown/question:hidden">
+              Search
+            </button>
+          </form>
+
+          <div className="flex flex-wrap gap-4 xl:ml-auto max-sm:ml-0">
+            <SelectYear />
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              onClick={async () => {
+                const csv = generateCsv(csvConfig)(csvData);
+                download(csvConfig)(csv);
+              }}
+            >
+              Export as CSV
+              <span>
+                <Download size={18} />
+              </span>
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  Filter
+                  <span>
+                    <Filter size={18} />
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {table
+                  ?.getAllColumns()
+                  ?.filter((column) => column.getCanHide())
+                  ?.map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        className="capitalize"
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {column.id}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-      </div>
+      )}
+
       <div>
         <Table>
           <TableHeader>

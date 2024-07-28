@@ -4,8 +4,11 @@ import { Inter } from "next/font/google";
 
 import { Toaster } from "sonner";
 import { PagesProgressBar as ProgressBar } from "next-nprogress-bar";
+import { ErrorBoundary } from "react-error-boundary";
 
 import Layout from "@/components/Layout";
+
+import ErrorBoundaryFallback from "@/components/ErrorBoundaryFallback";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <Layout>
-        <Component {...pageProps} />
+        <ErrorBoundary FallbackComponent={ErrorBoundaryFallback}>
+          <Component {...pageProps} />
+        </ErrorBoundary>
         <Toaster />
         <ProgressBar
           height="4px"

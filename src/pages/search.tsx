@@ -1,7 +1,11 @@
 import { useRef } from "react";
 import { useRouter } from "next/router";
 
-import { Search as SearchIcon } from "react-feather";
+import type { GetServerSidePropsContext } from "next";
+
+import { createClient } from "@/utils/supabase/server-props";
+
+import { SearchIcon } from "lucide-react";
 
 export default function Search() {
   const router = useRouter();
@@ -46,4 +50,27 @@ export default function Search() {
       </div>
     </main>
   );
+}
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const supabase = createClient(context);
+
+  try {
+    const { data, error } = await supabase.auth.getUser();
+
+    console.log({ searchData: data });
+
+    if (error || !data) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        props: {},
+      };
+    }
+  } catch (err) {}
 }

@@ -1,10 +1,11 @@
 import type { GetServerSidePropsContext } from "next";
+import type { User } from "@supabase/supabase-js";
 
 import { createClient } from "@/utils/supabase/server-props";
 
 import PaperList from "@/components/PaperList";
 
-export default function Papers({ user }: { user: any }) {
+export default function Papers({ user }: { user: User }) {
   return <PaperList user={user} />;
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -16,7 +17,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (error || !data) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/login",
         permanent: false,
       },
     };

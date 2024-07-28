@@ -6,6 +6,8 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
+import { toast } from "sonner";
+
 pdfjs.GlobalWorkerOptions.workerSrc =
   "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs";
 
@@ -52,7 +54,7 @@ export default function PDFSample({ fileUrl }: { fileUrl: string }) {
             //@ts-ignore
             pageNumber={pageNumber} //TODO:
             onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={() => alert("Error while loading document! ")}
+            onLoadError={() => toast.error("Error while loading document! ")}
             options={options}
           >
             {Array.from(new Array(numPages), (el, index) => (
