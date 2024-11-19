@@ -35,7 +35,7 @@ type ProcessedFormData = {
 const embeddings = new PremEmbeddings({
   apiKey: process.env.PREM_API_KEY,
   project_id: Number(process.env.PREM_PROJECT_ID),
-  model: "embed-multilingual",
+  model: "text-embedding-ada-002",
 });
 
 type Data = {
@@ -58,9 +58,7 @@ export default async function handler(
         msg: "not_authenticated",
       });
     }
-    const client = createClient(url, supabaseKey, {
-      auth: { persistSession: false },
-    });
+    const client = createClient(url, supabaseKey);
     //TODO:
     const form = new multiparty.Form();
     const formData = await new Promise<ProcessedFormData>((resolve, reject) => {
@@ -89,7 +87,7 @@ export default async function handler(
     });
     const docs = await textSplitter.splitDocuments(newDocs);
 
-    console.log({ docs });
+    // console.log({ docs });
 
     await SupabaseVectorStore.fromDocuments(docs, embeddings, {
       client,
@@ -99,6 +97,7 @@ export default async function handler(
 
     res.status(200).json({ msg: "Embedded Successfully!" });
   } catch (err) {
+    console.log({ err });
     res.status(500).json({ msg: "Something went wrong" });
   }
 }

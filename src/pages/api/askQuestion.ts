@@ -26,7 +26,7 @@ if (!url) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_URL`);
 const embeddings = new PremEmbeddings({
   apiKey: process.env.PREM_API_KEY,
   project_id: Number(process.env.PREM_PROJECT_ID),
-  model: "embed-multilingual",
+  model: "text-embedding-ada-002",
 });
 
 const model = new ChatGroq({
@@ -64,9 +64,7 @@ export default async function handler(
     const { question, paperId } = req.body;
 
     console.log({ question, paperId });
-    const client = createClient(url, supabaseKey, {
-      auth: { persistSession: false },
-    });
+    const client = createClient(url, supabaseKey);
 
     const funcFilterByCollection: SupabaseFilterRPCCall = (rpc) =>
       rpc.filter("metadata->>paperId", "eq", paperId); //TODO: filter by meta data
@@ -116,6 +114,7 @@ export default async function handler(
 
     res.status(200).json({ msg: results.answer });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ msg: "Something went wrong" });
   }
 }

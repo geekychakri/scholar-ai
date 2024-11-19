@@ -40,7 +40,7 @@ function ChatBox({
         .from("documents")
         .select("", { count: "exact" })
         .contains("metadata", {
-          paperId: paperId,
+          paperId,
         });
 
       console.log({ count });
